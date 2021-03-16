@@ -5,7 +5,6 @@
  */
 package negocio;
 
-import java.text.DecimalFormat;
 import javax.jws.WebService;
 import javax.jws.WebMethod;
 
@@ -21,11 +20,14 @@ public class ServicoJuros {
      *
      */
     private JurosSimples jurosSimples;
+    private JurosComposto juroscomposto;
 
     public ServicoJuros() {
         this.jurosSimples = new JurosSimples();
+        this.juroscomposto = new JurosComposto();
     }
 
+    
     @WebMethod(operationName = "calcularJuroSimples")
     public double calcularJuroSimples(double capital, double taxa, int periodo) {
         jurosSimples.setCapital(capital);
@@ -41,4 +43,21 @@ public class ServicoJuros {
         return capital + this.calcularJuroSimples(capital, taxa, periodo);
 
     }
+
+    @WebMethod(operationName = "calcularJuroComposto")
+    public double calcularJuroComposto(float capital, float taxa, int periodo) {
+
+        return this.calcularMontanteJuroComposto(capital, taxa, periodo) - capital;
+
+    }
+
+    @WebMethod(operationName = "calcularMontanteJuroComposto")
+    public double calcularMontanteJuroComposto(float capital, float taxa, int periodo) {
+        juroscomposto.setCapital(capital);
+        juroscomposto.setPeriodo(periodo);
+        juroscomposto.setTaxa(taxa);
+        return capital * Math.pow((1 + taxa / 100), periodo);
+
+    }
+    
 }
